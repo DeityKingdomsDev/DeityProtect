@@ -34,7 +34,7 @@ public class DeityProtect extends DeityPlugin {
     
     @Override
     protected void initInternalDatamembers() {
-        
+        ProtectionManager.reload();
     }
     
     @Override

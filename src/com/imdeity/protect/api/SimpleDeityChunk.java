@@ -15,7 +15,7 @@ public class SimpleDeityChunk extends DeityChunk {
         if (this.getId() <= 0) { return true; }
         if (type == DeityChunkPermissionTypes.ACCESS) { return true; }
         if (type == DeityChunkPermissionTypes.MOB_SPAWNING) { return true; }
-        if (type == DeityChunkPermissionTypes.PVP) { return false; }
+        if (type == DeityChunkPermissionTypes.PVP) { return true; }
         if (this.getOwner() != null && this.getOwner().equalsIgnoreCase(playerToVerify)) { return true; }
         return false;
     }

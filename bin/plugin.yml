@@ -3,8 +3,4 @@ main: com.imdeity.protect.DeityProtect
 version: 12.07.20
 language: english.yml
 author: vanZeben
-website: http://ImDeity.com
-
-commands:
-    DeityProtect:
-        aliases: []
+website: http://dev.bukkit.org/server-mods/deityprotect

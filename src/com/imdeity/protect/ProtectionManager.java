@@ -18,14 +18,14 @@ public class ProtectionManager {
     
     public static DeityChunk getChunk(String worldname, int xCoord, int zCoord) {
         for (DeityChunk chunk : loadedChunks) {
-            if (chunk.isChunk(worldname, xCoord, zCoord) && !(chunk instanceof SimpleDeityChunk) && chunk.getId() > 0) { return chunk; }
+            if (chunk.isChunk(worldname, xCoord, zCoord) && chunk.getId() > 0) { return chunk; }
         }
         return new SimpleDeityChunk(-1, DeityProtect.plugin.getServer().getWorld(worldname), xCoord, zCoord, null);
     }
     
     private static DeityChunk getChunkFromSQL(String worldname, int xCoord, int zCoord) {
         for (DeityChunk chunk : loadedChunks) {
-            if (chunk.isChunk(worldname, xCoord, zCoord) && !(chunk instanceof SimpleDeityChunk) && chunk.getId() > 0) { return chunk; }
+            if (chunk.isChunk(worldname, xCoord, zCoord) && chunk.getId() > 0) { return chunk; }
         }
         String sql = "SELECT * FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " WHERE world = ? AND x_coord = ? AND z_coord = ?;";
         DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, worldname, xCoord, zCoord);
@@ -44,12 +44,47 @@ public class ProtectionManager {
         return new SimpleDeityChunk(-1, DeityProtect.plugin.getServer().getWorld(worldname), xCoord, zCoord, null);
     }
     
+    public static void loadChunks() {
+        String sql = "SELECT * FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + ";";
+        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql);
+        if (query != null && query.hasRows()) {
+            for (int i = 0; i < query.rowCount(); i++) {
+                try {
+                    int id = query.getInteger(i, "id");
+                    World world = DeityProtect.plugin.getServer().getWorld(query.getString(i, "world"));
+                    String owner = query.getString(i, "owner");
+                    int xCoord = query.getInteger(i, "x_coord");
+                    int zCoord = query.getInteger(i, "z_coord");
+                    DeityChunk chunk = new SimpleDeityChunk(id, world, xCoord, zCoord, owner);
+                    addDeityChunkToCache(chunk);
+                } catch (SQLDataException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    public static void reload() {
+        loadedChunks.clear();
+        loadChunks();
+    }
+    
     public static DeityChunk getChunk(Location location) {
         return getChunk(location.getWorld().getName(), location.getChunk().getX(), location.getChunk().getZ());
     }
     
     public static void addDeityChunkToCache(DeityChunk chunk) {
-        if (chunk instanceof SimpleDeityChunk) { return; }
+        int index = -1;
+        for (int i = 0; i < loadedChunks.size(); i++) {
+            DeityChunk c = loadedChunks.get(i);
+            if (c.getId() == chunk.getId() && (c instanceof SimpleDeityChunk)) {
+                index = i;
+                break;
+            }
+        }
+        if (index != -1) {
+            loadedChunks.remove(index);
+        }
         loadedChunks.add(chunk);
     }
     
