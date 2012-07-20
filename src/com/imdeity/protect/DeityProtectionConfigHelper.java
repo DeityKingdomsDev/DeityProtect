@@ -1,4 +1,4 @@
-package com.imdeity.protect.utils;
+package com.imdeity.protect;
 
 public class DeityProtectionConfigHelper {
 
