@@ -1,6 +1,10 @@
 name: DeityProtect
 main: com.imdeity.protect.DeityProtect
-version: 12.07.20
+version: 12.08.03
 language: english.yml
 author: vanZeben
 website: http://dev.bukkit.org/server-mods/deityprotect
+depend: [DeityAPI]
+commands:
+    DeityProtect:
+        aliases: []

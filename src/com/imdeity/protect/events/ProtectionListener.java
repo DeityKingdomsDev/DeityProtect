@@ -23,6 +23,7 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import com.imdeity.deityapi.DeityAPI;
 import com.imdeity.deityapi.api.DeityListener;
 import com.imdeity.protect.DeityProtect;
 import com.imdeity.protect.DeityProtectLangHelper;
@@ -34,41 +35,38 @@ public class ProtectionListener extends DeityListener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if ((player != null) && (player instanceof Player)) {
-            Chunk chunk = player.getWorld().getChunkAt(event.getBlock().getLocation());
-            DeityChunk dChunk = ProtectionManager.getChunk(player.getWorld().getName(), chunk.getX(), chunk.getZ());
-            
-            if (!dChunk.hasEditPemission(player.getName())) {
-                DeityProtect.plugin.chat.sendPlayerMessage(player, DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_BLOCK_BREAK));
-                event.setCancelled(true);
-            }
+        if ((player == null) || !(player instanceof Player) || DeityProtect.hasOverride(player)) { return; }
+        Chunk chunk = player.getWorld().getChunkAt(event.getBlock().getLocation());
+        DeityChunk dChunk = ProtectionManager.getChunk(player.getWorld().getName(), chunk.getX(), chunk.getZ());
+        
+        if (!dChunk.hasEditPemission(player.getName())) {
+            DeityProtect.plugin.chat.sendPlayerMessage(player, DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_BLOCK_BREAK));
+            event.setCancelled(true);
         }
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
-        if ((player != null) && (player instanceof Player)) {
-            Chunk chunk = player.getWorld().getChunkAt(event.getBlock().getLocation());
-            DeityChunk dChunk = ProtectionManager.getChunk(player.getWorld().getName(), chunk.getX(), chunk.getZ());
-            if (!dChunk.hasEditPemission(player.getName())) {
-                DeityProtect.plugin.chat.sendPlayerMessage(player, DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_BLOCK_PLACE));
-                event.setCancelled(true);
-            }
+        if ((player == null) || !(player instanceof Player) || DeityProtect.hasOverride(player)) { return; }
+        Chunk chunk = player.getWorld().getChunkAt(event.getBlock().getLocation());
+        DeityChunk dChunk = ProtectionManager.getChunk(player.getWorld().getName(), chunk.getX(), chunk.getZ());
+        if (!dChunk.hasEditPemission(player.getName())) {
+            DeityProtect.plugin.chat.sendPlayerMessage(player, DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_BLOCK_PLACE));
+            event.setCancelled(true);
         }
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
     public void onSignChange(SignChangeEvent event) {
         Player player = event.getPlayer();
-        if ((player != null) && (player instanceof Player)) {
-            Chunk chunk = player.getWorld().getChunkAt(event.getBlock().getLocation());
-            DeityChunk dChunk = ProtectionManager.getChunk(player.getWorld().getName(), chunk.getX(), chunk.getZ());
-            
-            if (!dChunk.hasEditPemission(player.getName())) {
-                DeityProtect.plugin.chat.sendPlayerMessage(player, DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_SIGN_EDIT));
-                event.setCancelled(true);
-            }
+        if ((player == null) || !(player instanceof Player) || DeityProtect.hasOverride(player)) { return; }
+        Chunk chunk = player.getWorld().getChunkAt(event.getBlock().getLocation());
+        DeityChunk dChunk = ProtectionManager.getChunk(player.getWorld().getName(), chunk.getX(), chunk.getZ());
+        
+        if (!dChunk.hasEditPemission(player.getName())) {
+            DeityProtect.plugin.chat.sendPlayerMessage(player, DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_SIGN_EDIT));
+            event.setCancelled(true);
         }
     }
     
@@ -103,8 +101,9 @@ public class ProtectionListener extends DeityListener {
     
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerMove(PlayerMoveEvent event) {
-        if (this.fixLocation(event.getFrom()).distance(this.fixLocation(event.getTo())) == 0.0) { return; }
+        if (DeityAPI.getAPI().getUtilAPI().fixLocation(event.getFrom()).distance(DeityAPI.getAPI().getUtilAPI().fixLocation(event.getTo())) == 0.0) { return; }
         Player player = event.getPlayer();
+        if ((player == null) || !(player instanceof Player) || DeityProtect.hasOverride(player)) { return; }
         World world = event.getFrom().getWorld();
         Chunk chunkFrom = world.getChunkAt(event.getFrom());
         Chunk chunkTo = world.getChunkAt(event.getTo());
@@ -122,28 +121,26 @@ public class ProtectionListener extends DeityListener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
         Player player = event.getPlayer();
-        if ((player != null) && (player instanceof Player)) {
-            Chunk chunk = player.getWorld().getChunkAt(event.getBlockClicked().getLocation());
-            DeityChunk dChunk = ProtectionManager.getChunk(player.getWorld().getName(), chunk.getX(), chunk.getZ());
-            
-            if (!dChunk.hasEditPemission(player.getName())) {
-                DeityProtect.plugin.chat.sendPlayerMessage(player, DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_BUCKET_EMPTY));
-                event.setCancelled(true);
-            }
+        if ((player == null) || !(player instanceof Player) || DeityProtect.hasOverride(player)) { return; }
+        Chunk chunk = player.getWorld().getChunkAt(event.getBlockClicked().getLocation());
+        DeityChunk dChunk = ProtectionManager.getChunk(player.getWorld().getName(), chunk.getX(), chunk.getZ());
+        
+        if (!dChunk.hasEditPemission(player.getName())) {
+            DeityProtect.plugin.chat.sendPlayerMessage(player, DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_BUCKET_EMPTY));
+            event.setCancelled(true);
         }
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerBucketFill(PlayerBucketFillEvent event) {
         Player player = event.getPlayer();
-        if ((player != null) && (player instanceof Player)) {
-            Chunk chunk = player.getWorld().getChunkAt(event.getBlockClicked().getLocation());
-            DeityChunk dChunk = ProtectionManager.getChunk(player.getWorld().getName(), chunk.getX(), chunk.getZ());
-            
-            if (!dChunk.hasEditPemission(player.getName())) {
-                DeityProtect.plugin.chat.sendPlayerMessage(player, DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_BUCKET_FILL));
-                event.setCancelled(true);
-            }
+        if ((player == null) || !(player instanceof Player) || DeityProtect.hasOverride(player)) { return; }
+        Chunk chunk = player.getWorld().getChunkAt(event.getBlockClicked().getLocation());
+        DeityChunk dChunk = ProtectionManager.getChunk(player.getWorld().getName(), chunk.getX(), chunk.getZ());
+        
+        if (!dChunk.hasEditPemission(player.getName())) {
+            DeityProtect.plugin.chat.sendPlayerMessage(player, DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_BUCKET_FILL));
+            event.setCancelled(true);
         }
     }
     
@@ -152,7 +149,7 @@ public class ProtectionListener extends DeityListener {
         Player player = event.getPlayer();
         Block clicked = event.getClickedBlock();
         if (clicked == null) { return; }
-        if ((player == null) || !(player instanceof Player)) { return; }
+        if ((player == null) || !(player instanceof Player) || DeityProtect.hasOverride(player)) { return; }
         
         Chunk chunk = player.getWorld().getChunkAt(clicked.getLocation());
         DeityChunk dChunk = ProtectionManager.getChunk(player.getWorld().getName(), chunk.getX(), chunk.getZ());
@@ -211,7 +208,7 @@ public class ProtectionListener extends DeityListener {
             Projectile proj = (Projectile) eAttacker;
             eAttacker = proj.getShooter();
         }
-        if (eAttacker instanceof Player && eDefender instanceof Player) {
+        if (eAttacker instanceof Player && !DeityProtect.hasOverride((Player) eAttacker) && eDefender instanceof Player) {
             Player pAttacker = (Player) eAttacker;
             Player pDefender = (Player) eDefender;
             DeityChunk dAttackerChunk = ProtectionManager.getChunk(pAttacker.getLocation());
@@ -247,12 +244,5 @@ public class ProtectionListener extends DeityListener {
             }
         }
         return true;
-    }
-    
-    private Location fixLocation(Location loc) {
-        loc.setX((int) loc.getX());
-        loc.setY((int) loc.getY());
-        loc.setZ((int) loc.getZ());
-        return loc;
     }
 }

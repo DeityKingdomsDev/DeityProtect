@@ -1,7 +1,11 @@
 package com.imdeity.protect;
 
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+
 import com.imdeity.deityapi.DeityAPI;
 import com.imdeity.deityapi.api.DeityPlugin;
+import com.imdeity.protect.cmds.DeityProtectCommandHandler;
 import com.imdeity.protect.events.ProtectionListener;
 
 public class DeityProtect extends DeityPlugin {
@@ -11,16 +15,18 @@ public class DeityProtect extends DeityPlugin {
     
     @Override
     protected void initCmds() {
-        // No commands
+        this.registerCommand(new DeityProtectCommandHandler("DeityProtect"));
     }
     
     @Override
     protected void initConfig() {
-        this.config.addDefaultConfigValue(DeityProtectionConfigHelper.MYSQL_SERVER_ADDRESS, "localhost");
-        this.config.addDefaultConfigValue(DeityProtectionConfigHelper.MYSQL_SERVER_PORT, 3306);
-        this.config.addDefaultConfigValue(DeityProtectionConfigHelper.MYSQL_DATABASE_NAME, "kingdoms");
-        this.config.addDefaultConfigValue(DeityProtectionConfigHelper.MYSQL_DATABASE_USERNAME, "root");
-        this.config.addDefaultConfigValue(DeityProtectionConfigHelper.MYSQL_DATABASE_PASSWORD, "root");
+        for (World world : this.getServer().getWorlds()) {
+            this.config.addDefaultConfigValue(String.format(DeityProtectionConfigHelper.WORLD_EDIT_NODE, world.getName()), true);
+            this.config.addDefaultConfigValue(String.format(DeityProtectionConfigHelper.WORLD_USE_NODE, world.getName()), true);
+            this.config.addDefaultConfigValue(String.format(DeityProtectionConfigHelper.WORLD_ACCESS_NODE, world.getName()), true);
+            this.config.addDefaultConfigValue(String.format(DeityProtectionConfigHelper.WORLD_MOB_SPAWN_NODE, world.getName()), true);
+            this.config.addDefaultConfigValue(String.format(DeityProtectionConfigHelper.WORLD_PVP_NODE, world.getName()), true);
+        }
     }
     
     @Override
@@ -75,5 +81,13 @@ public class DeityProtect extends DeityPlugin {
     @Override
     protected void initTasks() {
         // No tasks
+    }
+    
+    public static boolean hasOverride(Player player) {
+        if (player.isOp() || player.hasPermission("deityprotect.override")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

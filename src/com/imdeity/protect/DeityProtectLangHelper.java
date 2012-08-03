@@ -14,12 +14,12 @@ public class DeityProtectLangHelper {
     public static final String INVALID_USE_FURNACE = "deityprotect.exception_messages.use.furnace";
     public static final String INVALID_USE_BED = "deityprotect.exception_messages.use.bed";
     public static final String INVALID_USE_PRESSURE_PLATE = "deityprotect.exception_messages.use.pressure_plater";
-    public static final String INVALID_USE_WORKBENCH= "deityprotect.exception_messages.use.workbench";
-    public static final String INVALID_USE_TRAP_DOOR= "deityprotect.exception_messages.use.trap_door";
-    public static final String INVALID_USE_DISPENSER= "deityprotect.exception_messages.use.dispenser";
-    public static final String INVALID_USE_NOTE_BLOCK= "deityprotect.exception_messages.use.note_block";
-    public static final String INVALID_USE_JUKEBOX= "deityprotect.exception_messages.use.jukebox";
-    public static final String INVALID_USE_BOAT= "deityprotect.exception_messages.use.boat";
-    public static final String INVALID_USE_MINECART= "deityprotect.exception_messages.use.minecart";
-    public static final String INVALID_FIGHT= "deityprotect.exception_messages.pvp";
+    public static final String INVALID_USE_WORKBENCH = "deityprotect.exception_messages.use.workbench";
+    public static final String INVALID_USE_TRAP_DOOR = "deityprotect.exception_messages.use.trap_door";
+    public static final String INVALID_USE_DISPENSER = "deityprotect.exception_messages.use.dispenser";
+    public static final String INVALID_USE_NOTE_BLOCK = "deityprotect.exception_messages.use.note_block";
+    public static final String INVALID_USE_JUKEBOX = "deityprotect.exception_messages.use.jukebox";
+    public static final String INVALID_USE_BOAT = "deityprotect.exception_messages.use.boat";
+    public static final String INVALID_USE_MINECART = "deityprotect.exception_messages.use.minecart";
+    public static final String INVALID_FIGHT = "deityprotect.exception_messages.pvp";
 }
