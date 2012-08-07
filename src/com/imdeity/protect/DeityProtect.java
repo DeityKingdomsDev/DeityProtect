@@ -26,6 +26,8 @@ public class DeityProtect extends DeityPlugin {
             this.config.addDefaultConfigValue(String.format(DeityProtectionConfigHelper.WORLD_ACCESS_NODE, world.getName()), true);
             this.config.addDefaultConfigValue(String.format(DeityProtectionConfigHelper.WORLD_MOB_SPAWN_NODE, world.getName()), true);
             this.config.addDefaultConfigValue(String.format(DeityProtectionConfigHelper.WORLD_PVP_NODE, world.getName()), true);
+            this.config.addDefaultConfigValue(String.format(DeityProtectionConfigHelper.WORLD_EXPLOSION_NODE, world.getName()), true);
+            this.config.addDefaultConfigValue(String.format(DeityProtectionConfigHelper.WILDERNESS_REGENRATION_ENABLED, world.getName()), false);
         }
     }
     
@@ -36,8 +38,18 @@ public class DeityProtect extends DeityPlugin {
                 .getMySQL()
                 .write("CREATE TABLE IF NOT EXISTS " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + "( " + "`id` INT(16) NOT NULL AUTO_INCREMENT, " + " `world` VARCHAR(30) NOT NULL, " + " `x_coord` INT(16) NOT NULL, " + " `z_coord` INT(16) NOT NULL, "
                         + " `owner` VARCHAR(30), " + " PRIMARY KEY (`id`) " + ") ENGINE = MYISAM;");
+        
+        DeityAPI.getAPI().getDataAPI().getMySQL().write("CREATE TABLE IF NOT EXISTS "+getRegenTable()+"( "+
+                "`id` INT(16) NOT NULL AUTO_INCREMENT, "+
+                "`world` VARCHAR(64) NOT NULL, " +
+                "`x_coord` INT(16) NOT NULL, "+
+                "`z_coord` INT(16) NOT NULL, "+
+                "`last_updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "+" PRIMARY KEY (`id`) " + ") ENGINE = MYISAM;");
     }
     
+    public static String getRegenTable() {
+        return DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "regen_chunks");
+    }
     @Override
     protected void initInternalDatamembers() {
         ProtectionManager.reload();
@@ -65,6 +77,8 @@ public class DeityProtect extends DeityPlugin {
         this.language.addDefaultLanguageValue(DeityProtectLangHelper.INVALID_USE_JUKEBOX, "&fYou aren't allowed to &cuse jukeboxes &fhere!");
         this.language.addDefaultLanguageValue(DeityProtectLangHelper.INVALID_USE_BOAT, "&fYou aren't allowed to &cget in boats &fhere!");
         this.language.addDefaultLanguageValue(DeityProtectLangHelper.INVALID_USE_MINECART, "&fYou aren't allowed to &cget in minecarts &fhere!");
+        this.language.addDefaultLanguageValue(DeityProtectLangHelper.INVALID_USE_TRIPWIRE, "&fYou aren't allowed to &cactivate tripwire &fhere!");
+        this.language.addDefaultLanguageValue(DeityProtectLangHelper.INVALID_USE_ENDERPEARL, "&fYou aren't allowed to &cuse an enderpearl &fhere!");
         this.language.addDefaultLanguageValue(DeityProtectLangHelper.INVALID_FIGHT, "&fYou aren't allowed to &cfight &fhere!");
     }
     

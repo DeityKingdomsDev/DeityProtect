@@ -1,5 +1,8 @@
 package com.imdeity.protect.events;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -7,6 +10,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -18,10 +22,13 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.imdeity.deityapi.DeityAPI;
 import com.imdeity.deityapi.api.DeityListener;
@@ -150,7 +157,6 @@ public class ProtectionListener extends DeityListener {
         Block clicked = event.getClickedBlock();
         if (clicked == null) { return; }
         if ((player == null) || !(player instanceof Player) || DeityProtect.hasOverride(player)) { return; }
-        
         Chunk chunk = player.getWorld().getChunkAt(clicked.getLocation());
         DeityChunk dChunk = ProtectionManager.getChunk(player.getWorld().getName(), chunk.getX(), chunk.getZ());
         if (!dChunk.hasUsePemission(player.getName())) {
@@ -196,6 +202,9 @@ public class ProtectionListener extends DeityListener {
             } else if (clicked.getType().equals(Material.MINECART)) {
                 DeityProtect.plugin.chat.sendPlayerMessage(player, DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_USE_MINECART));
                 event.setCancelled(true);
+            } else if (clicked.getType().equals(Material.TRIPWIRE)) {
+                DeityProtect.plugin.chat.sendPlayerMessage(player, DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_USE_TRIPWIRE));
+                event.setCancelled(true);
             }
         }
     }
@@ -223,6 +232,18 @@ public class ProtectionListener extends DeityListener {
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
+    public void onProjectileLaunch(ProjectileLaunchEvent event) {
+        if (event.getEntity().getType() == EntityType.ENDER_PEARL) {
+            if (event.getEntity().getShooter() instanceof Player && !DeityProtect.hasOverride((Player) event.getEntity().getShooter())) {
+                Player player = (Player) event.getEntity().getShooter();
+                DeityProtect.plugin.chat.sendPlayerMessage(player, DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_USE_ENDERPEARL));
+                DeityAPI.getAPI().getPlayerAPI().getInventoryAPI().addItemToInventory(player.getInventory(), new ItemStack(Material.ENDER_PEARL, 1));
+                event.setCancelled(true);
+            }
+        }
+    }
+    
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         if (event.isCancelled()) { return; }
         Chunk chunk = event.getLocation().getWorld().getChunkAt(event.getLocation());
@@ -244,5 +265,22 @@ public class ProtectionListener extends DeityListener {
             }
         }
         return true;
+    }
+    
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onEntityExplode(EntityExplodeEvent event) {
+        List<Integer> blocksToRemove = new ArrayList<Integer>();
+        for (int i = 0; i < event.blockList().size(); i++) {
+            Block b = event.blockList().get(i);
+            DeityChunk dChunk = ProtectionManager.getChunk(b.getLocation().getWorld().getName(), b.getLocation().getChunk().getX(), b.getLocation().getChunk().getZ());
+            if (!dChunk.canExplode(event.getEntityType().getName())) {
+                blocksToRemove.add(i);
+            }
+        }
+        int numRemoved = 0;
+        for (int i : blocksToRemove) {
+            event.blockList().remove(i - numRemoved);
+            numRemoved++;
+        }
     }
 }

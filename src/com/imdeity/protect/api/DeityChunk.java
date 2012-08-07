@@ -94,5 +94,9 @@ public abstract class DeityChunk {
         return runPermissionCheck(DeityChunkPermissionTypes.PVP, playerToVerify);
     }
     
+    public boolean canExplode(String entityType) {
+        return runPermissionCheck(DeityChunkPermissionTypes.EXPLOSION, entityType);
+    }
+    
     public abstract boolean runPermissionCheck(DeityChunkPermissionTypes type, String requester);
 }

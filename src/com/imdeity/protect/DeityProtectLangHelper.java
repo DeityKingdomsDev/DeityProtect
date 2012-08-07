@@ -21,5 +21,7 @@ public class DeityProtectLangHelper {
     public static final String INVALID_USE_JUKEBOX = "deityprotect.exception_messages.use.jukebox";
     public static final String INVALID_USE_BOAT = "deityprotect.exception_messages.use.boat";
     public static final String INVALID_USE_MINECART = "deityprotect.exception_messages.use.minecart";
+    public static final String INVALID_USE_TRIPWIRE = "deityprotect.exception_messages.use.tripwire";
+    public static final String INVALID_USE_ENDERPEARL = "deityprotect.exception_messages.use.enderpearl";
     public static final String INVALID_FIGHT = "deityprotect.exception_messages.pvp";
 }
