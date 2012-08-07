@@ -16,9 +16,11 @@ public class SimpleDeityChunk extends DeityChunk {
     public boolean runPermissionCheck(DeityChunkPermissionTypes type, String playerToVerify) {
         World world = this.getWorld();
         if (type == DeityChunkPermissionTypes.ACCESS) {
-            return DeityProtect.plugin.config.getBoolean(String.format(DeityProtectionConfigHelper.WORLD_ACCESS_NODE, world.getName()));
+            return DeityProtect.plugin.config
+                    .getBoolean(String.format(DeityProtectionConfigHelper.WORLD_ACCESS_NODE, world.getName()));
         } else if (type == DeityChunkPermissionTypes.MOB_SPAWNING) {
-            return DeityProtect.plugin.config.getBoolean(String.format(DeityProtectionConfigHelper.WORLD_MOB_SPAWN_NODE, world.getName()));
+            return DeityProtect.plugin.config.getBoolean(String.format(DeityProtectionConfigHelper.WORLD_MOB_SPAWN_NODE,
+                    world.getName()));
         } else if (type == DeityChunkPermissionTypes.PVP) {
             return DeityProtect.plugin.config.getBoolean(String.format(DeityProtectionConfigHelper.WORLD_PVP_NODE, world.getName()));
         } else if (type == DeityChunkPermissionTypes.USE) {
@@ -27,7 +29,8 @@ public class SimpleDeityChunk extends DeityChunk {
             if (this.getOwner() != null && this.getOwner().equalsIgnoreCase(playerToVerify)) { return true; }
             return DeityProtect.plugin.config.getBoolean(String.format(DeityProtectionConfigHelper.WORLD_EDIT_NODE, world.getName()));
         } else if (type == DeityChunkPermissionTypes.EXPLOSION) {
-            return DeityProtect.plugin.config.getBoolean(String.format(DeityProtectionConfigHelper.WORLD_EXPLOSION_NODE, world.getName()));
+            return DeityProtect.plugin.config.getBoolean(String.format(DeityProtectionConfigHelper.WORLD_EXPLOSION_NODE,
+                    world.getName()));
         } else {
             return false;
         }

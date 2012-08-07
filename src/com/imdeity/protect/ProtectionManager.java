@@ -27,7 +27,8 @@ public class ProtectionManager {
         for (DeityChunk chunk : loadedChunks) {
             if (chunk.isChunk(worldname, xCoord, zCoord) && chunk.getId() > 0) { return chunk; }
         }
-        String sql = "SELECT * FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " WHERE world = ? AND x_coord = ? AND z_coord = ?;";
+        String sql = "SELECT * FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks")
+                + " WHERE world = ? AND x_coord = ? AND z_coord = ?;";
         DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, worldname, xCoord, zCoord);
         if (query != null && query.hasRows()) {
             try {
@@ -89,7 +90,8 @@ public class ProtectionManager {
     }
     
     public static int addNewDeityChunk(String world, int xCoord, int zCoord) {
-        String sql = "INSERT INTO " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " (owner, world, x_coord, z_coord) VALUES (null, ?, ?, ?);";
+        String sql = "INSERT INTO " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks")
+                + " (owner, world, x_coord, z_coord) VALUES (null, ?, ?, ?);";
         DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, world, xCoord, zCoord);
         int id = getChunkFromSQL(world, xCoord, zCoord).getId();
         
@@ -97,13 +99,15 @@ public class ProtectionManager {
     }
     
     public static void removeDeityChunk(String world, int xCoord, int zCoord) {
-        String sql = "DELETE FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " WHERE world = ? AND x_coord = ? AND z_coord = ?;";
+        String sql = "DELETE FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks")
+                + " WHERE world = ? AND x_coord = ? AND z_coord = ?;";
         DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, world, xCoord, zCoord);
         removeDeityChunkFromCache(world, xCoord, zCoord);
     }
     
     public static void removeDeityChunk(int id) {
-        String sql = "DELETE FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + " WHERE id = ?";
+        String sql = "DELETE FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks")
+                + " WHERE id = ?";
         DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, id);
         removeDeityChunkFromCache(id);
     }

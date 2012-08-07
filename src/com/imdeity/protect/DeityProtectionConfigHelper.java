@@ -8,5 +8,5 @@ public class DeityProtectionConfigHelper {
     public static final String WORLD_MOB_SPAWN_NODE = "deityprotect.worlds.%s.default_mob_spawn_perm";
     public static final String WORLD_PVP_NODE = "deityprotect.worlds.%s.default_pvp_perm";
     public static final String WORLD_EXPLOSION_NODE = "deityprotect.worlds.%s.default_explosion_perm";
-    public static final String WILDERNESS_REGENRATION_ENABLED = "deityprotect.world.%s.enable_wilderness_regen";
+    public static final String WILDERNESS_REGENRATION_ENABLED = "deityprotect.worlds.%s.enable_wilderness_regen";
 }

@@ -10,6 +10,7 @@ public class DeityProtectCommandHandler extends DeityCommandHandler {
     
     @Override
     protected void initRegisteredCommands() {
-        this.registerCommand("reload", null, "", "Reloads the config and language files", new DeityProtectReloadCommand(), "DeityProtect.admin");
+        this.registerCommand("reload", null, "", "Reloads the config and language files", new DeityProtectReloadCommand(),
+                "DeityProtect.admin");
     }
 }
