@@ -3,8 +3,8 @@ package com.imdeity.protect.api;
 import org.bukkit.World;
 
 import com.imdeity.deityapi.DeityAPI;
-import com.imdeity.protect.ProtectionManager;
 import com.imdeity.protect.enums.DeityChunkPermissionTypes;
+import com.imdeity.protect.obj.ProtectionManager;
 
 public abstract class DeityChunk {
     private int id;
@@ -39,6 +39,10 @@ public abstract class DeityChunk {
         return zCoord;
     }
     
+    public String getOwner() {
+        return owner;
+    }
+
     public boolean isChunk(String world, int xCoord, int zCoord) {
         if (this.world != null && world != null && this.world.getName().equalsIgnoreCase(world) && this.xCoord == xCoord
                 && this.zCoord == zCoord) { return true; }
@@ -47,29 +51,6 @@ public abstract class DeityChunk {
     
     public boolean isChunk(DeityChunk chunk) {
         return isChunk(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
-    }
-    
-    public void hasUpdated() {
-        this.hasUpdated = true;
-    }
-    
-    public void save() {
-        if (hasUpdated) {
-            hasUpdated = false;
-            String sql = "UPDATE " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks")
-                    + " SET owner = ?, world = ?, x_coord = ?, z_coord = ? WHERE id = ?;";
-            DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, owner, world.getName(), xCoord, zCoord, id);
-        }
-    }
-    
-    public void remove() {
-        String sql = "DELETE FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks")
-                + " WHERE id = ?";
-        DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, id);
-    }
-    
-    public String getOwner() {
-        return owner;
     }
     
     public void setOwner(String newOwner) {
@@ -102,4 +83,23 @@ public abstract class DeityChunk {
     }
     
     public abstract boolean runPermissionCheck(DeityChunkPermissionTypes type, String requester);
+
+    public void hasUpdated() {
+        this.hasUpdated = true;
+    }
+
+    public void save() {
+        if (hasUpdated) {
+            hasUpdated = false;
+            String sql = "UPDATE " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks")
+                    + " SET owner = ?, world = ?, x_coord = ?, z_coord = ? WHERE id = ?;";
+            DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, owner, world.getName(), xCoord, zCoord, id);
+        }
+    }
+
+    public void remove() {
+        String sql = "DELETE FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks")
+                + " WHERE id = ?";
+        DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, id);
+    }
 }

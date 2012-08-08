@@ -1,12 +1,15 @@
 package com.imdeity.protect;
 
 import org.bukkit.World;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.imdeity.deityapi.DeityAPI;
 import com.imdeity.deityapi.api.DeityPlugin;
 import com.imdeity.protect.cmds.DeityProtectCommandHandler;
 import com.imdeity.protect.events.ProtectionListener;
+import com.imdeity.protect.obj.ProtectionManager;
 
 public class DeityProtect extends DeityPlugin {
     
@@ -58,6 +61,8 @@ public class DeityProtect extends DeityPlugin {
     @Override
     protected void initInternalDatamembers() {
         ProtectionManager.reload();
+        ProtectionManager.loadRegenChunks();
+        // ProtectionManager.regenChunks(7);
     }
     
     @Override
@@ -127,5 +132,18 @@ public class DeityProtect extends DeityPlugin {
         } else {
             return false;
         }
+    }
+    
+    public static boolean isWorldAllowingRegeneration(String worldname) {
+        return plugin.config.getBoolean(String.format(DeityProtectionConfigHelper.WILDERNESS_REGENRATION_ENABLED, worldname));
+    }
+    
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (command.getName().equalsIgnoreCase("Regen")) {
+            ProtectionManager.regenChunks(Integer.valueOf(args[0]));
+            System.out.println("Regenned");
+            return true;
+        }
+        return false;
     }
 }
