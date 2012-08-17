@@ -53,12 +53,6 @@ public class ProtectionListener extends DeityListener {
             event.setCancelled(true);
         }
     }
-
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void onChunkUnload(ChunkUnloadEvent event) {
-    	
-    	ProtectionManager.removeDeityChunkFromCache(event.getWorld().getName(), event.getChunk().getX(), event.getChunk().getZ());
-    }
     
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBlockPlace(BlockPlaceEvent event) {
