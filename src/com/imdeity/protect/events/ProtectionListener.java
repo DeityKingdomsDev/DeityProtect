@@ -28,6 +28,7 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.imdeity.deityapi.DeityAPI;
@@ -51,6 +52,12 @@ public class ProtectionListener extends DeityListener {
                     DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_BLOCK_BREAK));
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onChunkUnload(ChunkUnloadEvent event) {
+    	
+    	ProtectionManager.removeDeityChunkFromCache(event.getWorld().getName(), event.getChunk().getX(), event.getChunk().getZ());
     }
     
     @EventHandler(priority = EventPriority.NORMAL)

@@ -122,7 +122,7 @@ public class ProtectionManager {
         }
     }
     
-    private static void removeDeityChunkFromCache(String world, int xCoord, int zCoord) {
+    public static void removeDeityChunkFromCache(String world, int xCoord, int zCoord) {
         for (int i = 0; i < loadedChunks.size(); i++) {
             DeityChunk chunk = loadedChunks.get(i);
             if (chunk.isChunk(world, xCoord, zCoord)) {
