@@ -117,22 +117,33 @@ public class ProtectionManager {
     }
     
     public static void removeDeityChunkFromCache(int id) {
+        DeityChunk chunk = null;
         for (int i = 0; i < loadedChunks.size(); i++) {
-            DeityChunk chunk = loadedChunks.get(i);
-            if (chunk.getId() == id) {
-                loadedChunks.remove(i);
-                return;
+            DeityChunk chunk2 = loadedChunks.get(i);
+            if (chunk2.getId() == id) {
+                chunk = chunk2;
+                break;
             }
+        }
+        if (chunk != null) {
+            removeDeityChunkFromCache(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
         }
     }
     
     private static void removeDeityChunkFromCache(String world, int xCoord, int zCoord) {
+        DeityChunk chunk = null;
+        int index = -1;
         for (int i = 0; i < loadedChunks.size(); i++) {
-            DeityChunk chunk = loadedChunks.get(i);
-            if (chunk.isChunk(world, xCoord, zCoord)) {
-                loadedChunks.remove(i);
-                return;
+            DeityChunk chunk2 = loadedChunks.get(i);
+            if (chunk2.isChunk(world, xCoord, zCoord)) {
+                chunk = chunk2;
+                index = i;
+                break;
             }
+        }
+        if (chunk != null && index >= 0) {
+            chunk.remove();
+            loadedChunks.remove(index);
         }
     }
     
