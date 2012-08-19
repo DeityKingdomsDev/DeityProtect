@@ -2,8 +2,6 @@ package com.imdeity.protect.obj;
 
 import java.sql.SQLDataException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -18,7 +16,6 @@ import com.imdeity.protect.api.SimpleDeityChunk;
 public class ProtectionManager {
     
     private static List<DeityChunk> loadedChunks = new ArrayList<DeityChunk>();
-    private static List<RegenChunk> chunksToRegen = new ArrayList<RegenChunk>();
     
     public static void loadChunks() {
         String sql = "SELECT * FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks") + ";";
@@ -91,7 +88,7 @@ public class ProtectionManager {
         int index = -1;
         for (int i = 0; i < loadedChunks.size(); i++) {
             DeityChunk c = loadedChunks.get(i);
-            if (c.getId() == chunk.getId() && (c instanceof SimpleDeityChunk)) {
+            if (c.getId() == chunk.getId()) {
                 index = i;
                 break;
             }
@@ -99,7 +96,9 @@ public class ProtectionManager {
         if (index != -1) {
             loadedChunks.remove(index);
         }
-        loadedChunks.add(chunk);
+        if (!(chunk instanceof SimpleDeityChunk)) {
+            loadedChunks.add(chunk);
+        }
     }
     
     public static void removeDeityChunk(String world, int xCoord, int zCoord) {
@@ -145,75 +144,5 @@ public class ProtectionManager {
             chunk.remove();
             loadedChunks.remove(index);
         }
-    }
-    
-    public static void loadRegenChunks() {
-        String sql = "SELECT * FROM " + DeityProtect.getRegenTable() + ";";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql);
-        if (query != null && query.hasRows()) {
-            for (int i = 0; i < query.rowCount(); i++) {
-                try {
-                    int id = query.getInteger(i, "id");
-                    World world = DeityProtect.plugin.getServer().getWorld(query.getString(i, "world"));
-                    int xCoord = query.getInteger(i, "x_coord");
-                    int zCoord = query.getInteger(i, "z_coord");
-                    Date lastUpdated = query.getDate(i, "last_updated");
-                    RegenChunk chunk = new RegenChunk(id, world, xCoord, zCoord, lastUpdated);
-                    chunksToRegen.add(chunk);
-                } catch (SQLDataException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-    
-    public static void updateChunk(String world, int xCoord, int zCoord) {
-        for (RegenChunk chunk : chunksToRegen) {
-            if (chunk.getWorld().getName().equalsIgnoreCase(world) && xCoord == chunk.getX() && zCoord == chunk.getZ()) {
-                chunk.update();
-            }
-        }
-    }
-    
-    public static void regenChunks(int amount) {
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, amount);
-        for (RegenChunk chunk : chunksToRegen) {
-            if (chunk.getLastUpdated().before(cal.getTime())) {
-                chunk.regen();
-                chunk.remove();
-            }
-        }
-    }
-    
-    public static boolean hasRegenChunk(String world, int xCoord, int zCoord) {
-        for (RegenChunk chunk : chunksToRegen) {
-            if (chunk.getWorld().getName().equalsIgnoreCase(world) && xCoord == chunk.getX() && zCoord == chunk.getZ()) { return true; }
-        }
-        return false;
-    }
-    
-    public static RegenChunk addNewRegenChunk(String world, int xCoord, int zCoord) {
-        String sql = "INSERT INTO " + DeityProtect.getRegenTable()
-                + " (world, x_coord, z_coord, last_update) VALUES (?,?,?,CURRENT_TIMESTAMP);";
-        DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, world, xCoord, zCoord);
-        return getRegenChunk(world, xCoord, zCoord);
-    }
-    
-    public static RegenChunk getRegenChunk(String world, int xCoord, int zCoord) {
-        String sql = "SELECT * FROM " + DeityProtect.getRegenTable() + " WHERE world = ? AND x_coord = ? AND z_coord = ?;";
-        DatabaseResults query = DeityAPI.getAPI().getDataAPI().getMySQL().readEnhanced(sql, world, xCoord, zCoord);
-        if (query != null && query.hasRows()) {
-            try {
-                int id = query.getInteger(0, "id");
-                Date lastUpdated = query.getDate(0, "last_updated");
-                RegenChunk chunk = new RegenChunk(id, DeityProtect.plugin.getServer().getWorld(world), xCoord, zCoord, lastUpdated);
-                chunksToRegen.add(chunk);
-                return chunk;
-            } catch (SQLDataException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
     }
 }

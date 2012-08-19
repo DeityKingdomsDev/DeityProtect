@@ -51,7 +51,6 @@ public class ProtectionListener extends DeityListener {
                     DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_BLOCK_BREAK));
             event.setCancelled(true);
         }
-        // updateChunk(event.getBlock().getLocation());
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
@@ -66,7 +65,6 @@ public class ProtectionListener extends DeityListener {
                     DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_BLOCK_PLACE));
             event.setCancelled(true);
         }
-        // updateChunk(event.getBlock().getLocation());
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
@@ -81,7 +79,6 @@ public class ProtectionListener extends DeityListener {
                     DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_SIGN_EDIT));
             event.setCancelled(true);
         }
-        // updateChunk(event.getBlock().getLocation());
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
@@ -97,7 +94,6 @@ public class ProtectionListener extends DeityListener {
                 }
             }
         }
-        // updateChunk(event.getBlock().getLocation());
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
@@ -112,7 +108,6 @@ public class ProtectionListener extends DeityListener {
                 }
             }
         }
-        // updateChunk(event.getBlock().getLocation());
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
@@ -148,7 +143,6 @@ public class ProtectionListener extends DeityListener {
                     DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_BUCKET_EMPTY));
             event.setCancelled(true);
         }
-        // updateChunk(event.getBlockClicked().getLocation());
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
@@ -163,7 +157,6 @@ public class ProtectionListener extends DeityListener {
                     DeityProtect.plugin.language.getNode(DeityProtectLangHelper.INVALID_BUCKET_FILL));
             event.setCancelled(true);
         }
-        // updateChunk(event.getBlockClicked().getLocation());
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
@@ -238,7 +231,6 @@ public class ProtectionListener extends DeityListener {
                 event.setCancelled(true);
             }
         }
-        // updateChunk(event.getClickedBlock().getLocation());
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
@@ -320,18 +312,6 @@ public class ProtectionListener extends DeityListener {
         for (int i : blocksToRemove) {
             event.blockList().remove(i - numRemoved);
             numRemoved++;
-        }
-        // updateChunk(event.getLocation());
-    }
-    
-    public static void updateChunk(Location location) {
-        if (!DeityProtect.isWorldAllowingRegeneration(location.getWorld().getName())) { return; }
-        DeityChunk dChunk = ProtectionManager.getChunk(location);
-        if (dChunk == null || dChunk.getId() > 0) { return; }
-        if (ProtectionManager.hasRegenChunk(location.getWorld().getName(), location.getChunk().getX(), location.getChunk().getZ())) {
-            ProtectionManager.updateChunk(location.getWorld().getName(), location.getChunk().getX(), location.getChunk().getZ());
-        } else {
-            ProtectionManager.addNewRegenChunk(location.getWorld().getName(), location.getChunk().getX(), location.getChunk().getZ());
         }
     }
 }

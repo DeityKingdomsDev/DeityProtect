@@ -1,8 +1,6 @@
 package com.imdeity.protect;
 
 import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.imdeity.deityapi.DeityAPI;
@@ -30,8 +28,6 @@ public class DeityProtect extends DeityPlugin {
             this.config.addDefaultConfigValue(String.format(DeityProtectionConfigHelper.WORLD_MOB_SPAWN_NODE, world.getName()), true);
             this.config.addDefaultConfigValue(String.format(DeityProtectionConfigHelper.WORLD_PVP_NODE, world.getName()), true);
             this.config.addDefaultConfigValue(String.format(DeityProtectionConfigHelper.WORLD_EXPLOSION_NODE, world.getName()), true);
-            this.config.addDefaultConfigValue(
-                    String.format(DeityProtectionConfigHelper.WILDERNESS_REGENRATION_ENABLED, world.getName()), false);
         }
     }
     
@@ -44,25 +40,11 @@ public class DeityProtect extends DeityPlugin {
                         + "( " + "`id` INT(16) NOT NULL AUTO_INCREMENT, " + " `world` VARCHAR(30) NOT NULL, "
                         + " `x_coord` INT(16) NOT NULL, " + " `z_coord` INT(16) NOT NULL, " + " `owner` VARCHAR(30), "
                         + " PRIMARY KEY (`id`) " + ") ENGINE = MYISAM;");
-        
-        DeityAPI.getAPI()
-                .getDataAPI()
-                .getMySQL()
-                .write("CREATE TABLE IF NOT EXISTS " + getRegenTable() + "( " + "`id` INT(16) NOT NULL AUTO_INCREMENT, "
-                        + "`world` VARCHAR(64) NOT NULL, " + "`x_coord` INT(16) NOT NULL, " + "`z_coord` INT(16) NOT NULL, "
-                        + "`last_updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + " PRIMARY KEY (`id`) "
-                        + ") ENGINE = MYISAM;");
-    }
-    
-    public static String getRegenTable() {
-        return DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "regen_chunks");
     }
     
     @Override
     protected void initInternalDatamembers() {
         ProtectionManager.reload();
-        ProtectionManager.loadRegenChunks();
-        // ProtectionManager.regenChunks(7);
     }
     
     @Override
@@ -132,18 +114,5 @@ public class DeityProtect extends DeityPlugin {
         } else {
             return false;
         }
-    }
-    
-    public static boolean isWorldAllowingRegeneration(String worldname) {
-        return plugin.config.getBoolean(String.format(DeityProtectionConfigHelper.WILDERNESS_REGENRATION_ENABLED, worldname));
-    }
-    
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (command.getName().equalsIgnoreCase("Regen")) {
-            ProtectionManager.regenChunks(Integer.valueOf(args[0]));
-            System.out.println("Regenned");
-            return true;
-        }
-        return false;
     }
 }
