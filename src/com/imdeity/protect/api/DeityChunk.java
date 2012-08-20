@@ -42,7 +42,7 @@ public abstract class DeityChunk {
     public String getOwner() {
         return owner;
     }
-
+    
     public boolean isChunk(String world, int xCoord, int zCoord) {
         if (this.world != null && world != null && this.world.getName().equalsIgnoreCase(world) && this.xCoord == xCoord
                 && this.zCoord == zCoord) { return true; }
@@ -83,11 +83,11 @@ public abstract class DeityChunk {
     }
     
     public abstract boolean runPermissionCheck(DeityChunkPermissionTypes type, String requester);
-
+    
     public void hasUpdated() {
         this.hasUpdated = true;
     }
-
+    
     public void save() {
         if (hasUpdated) {
             hasUpdated = false;
@@ -96,10 +96,11 @@ public abstract class DeityChunk {
             DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, owner, world.getName(), xCoord, zCoord, id);
         }
     }
-
+    
     public void remove() {
         String sql = "DELETE FROM " + DeityAPI.getAPI().getDataAPI().getMySQL().tableName("deity_protect_", "chunks")
                 + " WHERE id = ?";
         DeityAPI.getAPI().getDataAPI().getMySQL().write(sql, id);
+        ProtectionManager.removeDeityChunkFromCache(id);
     }
 }

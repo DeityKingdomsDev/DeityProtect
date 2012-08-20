@@ -141,7 +141,6 @@ public class ProtectionManager {
             }
         }
         if (chunk != null && index >= 0) {
-            chunk.remove();
             loadedChunks.remove(index);
         }
     }
